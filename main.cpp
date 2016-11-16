@@ -15,7 +15,7 @@ SDL_Window *gWindow = NULL;
 // The surface contained by the window
 SDL_Surface *gScreenSurface = NULL;
 // The image we will load and show on the screen
-SDL_Surface *gHelloWorld = NULL;
+SDL_Surface *gXOut = NULL;
 
 // Screen dimension constants
 const int SCREEN_WIDTH  = 640;
@@ -38,10 +38,21 @@ int main(int argc, char **argv) {
             printf("Failed to load media!\n");
         }
         else {
-            // Apply the image
-            SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
-            SDL_UpdateWindowSurface(gWindow);
-            SDL_Delay(2000);
+            // Main loop flag
+            bool quit = false;
+            // Event handler
+            SDL_Event e;
+            
+            while (!quit) {
+                while (SDL_PollEvent(&e) != 0) {
+                    if (e.type == SDL_QUIT) {
+                        quit = true;
+                    }
+                }
+                // Apply the image
+                SDL_BlitSurface(gXOut, NULL, gScreenSurface, NULL);
+                SDL_UpdateWindowSurface(gWindow);
+            }
         }
     }
     close();
@@ -75,8 +86,8 @@ bool loadMedia(void) {
     // Loading success flag
     bool success = true;
     // Load splash image
-    gHelloWorld = SDL_LoadBMP("hello.bmp");
-    if (!gHelloWorld) {
+    gXOut = SDL_LoadBMP("hello.bmp");
+    if (!gXOut) {
         printf("Unable to load image! SDL_Error: %s\n", SDL_GetError());
         success = false;
     }
@@ -84,8 +95,8 @@ bool loadMedia(void) {
 }
 
 void close(void) {
-    SDL_FreeSurface(gHelloWorld);
-    gHelloWorld = NULL;
+    SDL_FreeSurface(gXOut);
+    gXOut = NULL;
     SDL_DestroyWindow(gWindow);
     gWindow = NULL;
     SDL_Quit();
